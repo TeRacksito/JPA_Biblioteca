@@ -1,5 +1,6 @@
-package es.angelkrasimirov.biblioteca.entities;
+package es.angelkrasimirov.biblioteca.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,10 +16,12 @@ public class BookCopy {
 
 	@ManyToOne
 	@JoinColumn(name = "book_id", nullable = false)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Book book;
 
 	@OneToOne
 	@JoinColumn(name = "loan_id")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private BookLoanHistory loan;
 
 	public Long getId() {
@@ -39,5 +42,13 @@ public class BookCopy {
 
 	public void setBook(Book book) {
 		this.book = book;
+	}
+
+	public BookLoanHistory getLoan() {
+		return loan;
+	}
+
+	public void setLoan(BookLoanHistory loan) {
+		this.loan = loan;
 	}
 }

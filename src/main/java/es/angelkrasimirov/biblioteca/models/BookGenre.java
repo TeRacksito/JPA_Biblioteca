@@ -1,4 +1,4 @@
-package es.angelkrasimirov.biblioteca.entities;
+package es.angelkrasimirov.biblioteca.models;
 
 import jakarta.persistence.*;
 

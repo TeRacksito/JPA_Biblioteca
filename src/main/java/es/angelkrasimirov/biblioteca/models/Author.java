@@ -1,5 +1,7 @@
-package es.angelkrasimirov.biblioteca.entities;
+package es.angelkrasimirov.biblioteca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -16,6 +18,7 @@ public class Author {
 	private String name;
 
 	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Set<Book> books = new HashSet<>();
 
 	public Long getId() {
@@ -36,5 +39,15 @@ public class Author {
 
 	public void setBooks(Set<Book> books) {
 		this.books = books;
+	}
+
+	public void addBook(Book book) {
+		books.add(book);
+		book.setAuthor(this);
+	}
+
+	public void removeBook(Book book) {
+		books.remove(book);
+		book.setAuthor(null);
 	}
 }

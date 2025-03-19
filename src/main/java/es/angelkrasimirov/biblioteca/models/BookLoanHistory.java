@@ -1,9 +1,10 @@
-package es.angelkrasimirov.biblioteca.entities;
+package es.angelkrasimirov.biblioteca.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "book_loans")
+@Table(name = "book_loan_history")
 public class BookLoanHistory {
 
 	@Id
@@ -12,10 +13,12 @@ public class BookLoanHistory {
 
 	@ManyToOne
 	@JoinColumn(name = "book_copy_id")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private BookCopy bookCopy;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private User user;
 
 	private String loanDate;

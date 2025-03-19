@@ -1,5 +1,7 @@
-package es.angelkrasimirov.biblioteca.entities;
+package es.angelkrasimirov.biblioteca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
@@ -17,18 +19,21 @@ public class Book {
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Author author;
 
 	@ManyToMany
 	@JoinTable(name = "books_genres",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "genre_id"))
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Set<BookGenre> genres = new LinkedHashSet<>();
 
 	@Column(unique = true)
 	private String uniqueCode;
 
 	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Set<BookCopy> copies = new LinkedHashSet<>();
 
 	public Long getId() {
@@ -69,9 +74,11 @@ public class Book {
 
 	public void addCopy(BookCopy copy) {
 		this.copies.add(copy);
+		copy.setBook(this);
 	}
 
 	public void removeCopy(BookCopy copy) {
 		this.copies.remove(copy);
+		copy.setBook(null);
 	}
 }

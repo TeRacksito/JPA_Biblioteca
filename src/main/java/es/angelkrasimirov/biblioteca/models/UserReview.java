@@ -1,5 +1,6 @@
-package es.angelkrasimirov.biblioteca.entities;
+package es.angelkrasimirov.biblioteca.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,9 +17,11 @@ public class UserReview {
 
 	@ManyToOne
 	@JoinColumn(name = "book_id")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Book book;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private User user;
 }
