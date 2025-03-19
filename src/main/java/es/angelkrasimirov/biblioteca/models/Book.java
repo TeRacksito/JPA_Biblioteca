@@ -1,6 +1,5 @@
 package es.angelkrasimirov.biblioteca.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -18,8 +17,9 @@ public class Book {
 	private String title;
 
 	@ManyToOne
-	@JoinColumn(name = "author_id")
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JoinColumn(name = "author_id", nullable = false)
+//	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Author author;
 
 	@ManyToMany

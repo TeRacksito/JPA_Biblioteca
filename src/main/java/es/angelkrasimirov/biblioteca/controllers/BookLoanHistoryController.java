@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/book-loan-history")
+@RequestMapping("/api/v1/book-loan-history")
 public class BookLoanHistoryController {
 
 	@Autowired
