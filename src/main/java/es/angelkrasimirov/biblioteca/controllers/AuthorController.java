@@ -1,12 +1,15 @@
 package es.angelkrasimirov.biblioteca.controllers;
 
 import es.angelkrasimirov.biblioteca.models.Author;
-import es.angelkrasimirov.biblioteca.models.Book;
 import es.angelkrasimirov.biblioteca.services.AuthorService;
 import es.angelkrasimirov.biblioteca.services.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -36,8 +39,32 @@ public class AuthorController {
 		return ResponseEntity.ok(author);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/authors")
-	public ResponseEntity<Author> saveAuthor(@RequestBody Author author) {
-		return ResponseEntity.ok(authorService.saveAuthor(author));
+	public ResponseEntity<Author> saveAuthor(@Valid @RequestBody Author author) {
+		Author newAuthor = authorService.saveAuthor(author);
+		return ResponseEntity.status(HttpStatus.CREATED).body(newAuthor);
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@PutMapping("/authors/{authorId}")
+	public ResponseEntity<Author> updateAuthor(@PathVariable Long authorId, @Valid @RequestBody Author author) {
+		try {
+			Author updatedAuthor = authorService.updateAuthor(authorId, author);
+			return ResponseEntity.ok(updatedAuthor);
+		} catch (NoResourceFoundException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@DeleteMapping("/authors/{authorId}")
+	public ResponseEntity<Void> deleteAuthor(@PathVariable Long authorId) {
+		try {
+			authorService.deleteAuthor(authorId);
+			return ResponseEntity.ok().build();
+		} catch (NoResourceFoundException e) {
+			return ResponseEntity.noContent().build();
+		}
 	}
 }

@@ -3,9 +3,10 @@ package es.angelkrasimirov.biblioteca.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "authors")
@@ -15,14 +16,19 @@ public class Author {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@NotNull(message = "Name is required")
 	private String name;
 
 	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private Set<Book> books = new HashSet<>();
+	@JsonIgnore
+	private List<Book> books = new ArrayList<>();
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -33,11 +39,11 @@ public class Author {
 		this.name = name;
 	}
 
-	public Set<Book> getBooks() {
+	public List<Book> getBooks() {
 		return books;
 	}
 
-	public void setBooks(Set<Book> books) {
+	public void setBooks(List<Book> books) {
 		this.books = books;
 	}
 

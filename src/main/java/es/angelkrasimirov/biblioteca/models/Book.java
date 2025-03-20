@@ -1,10 +1,12 @@
 package es.angelkrasimirov.biblioteca.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "books")
@@ -14,11 +16,11 @@ public class Book {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@NotNull(message = "Title is required")
 	private String title;
 
 	@ManyToOne
 	@JoinColumn(name = "author_id", nullable = false)
-//	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Author author;
 
@@ -26,18 +28,23 @@ public class Book {
 	@JoinTable(name = "books_genres",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private Set<BookGenre> genres = new LinkedHashSet<>();
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private List<BookGenre> genres = new ArrayList<>();
 
+	@NotNull(message = "Unique code is required")
 	@Column(unique = true)
 	private String uniqueCode;
 
 	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private Set<BookCopy> copies = new LinkedHashSet<>();
+	@JsonIgnore
+	private List<BookCopy> copies = new ArrayList<>();
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -64,11 +71,11 @@ public class Book {
 		this.uniqueCode = uniqueCode;
 	}
 
-	public Set<BookCopy> getCopies() {
+	public List<BookCopy> getCopies() {
 		return copies;
 	}
 
-	public void setCopies(Set<BookCopy> copies) {
+	public void setCopies(List<BookCopy> copies) {
 		this.copies = copies;
 	}
 
@@ -80,5 +87,21 @@ public class Book {
 	public void removeCopy(BookCopy copy) {
 		this.copies.remove(copy);
 		copy.setBook(null);
+	}
+
+	public List<BookGenre> getGenres() {
+		return genres;
+	}
+
+	public void setGenres(List<BookGenre> genres) {
+		this.genres = genres;
+	}
+
+	public void addGenre(BookGenre genre) {
+		this.genres.add(genre);
+	}
+
+	public void removeGenre(BookGenre genre) {
+		this.genres.remove(genre);
 	}
 }

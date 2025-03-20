@@ -1,10 +1,8 @@
 package es.angelkrasimirov.biblioteca.utils;
 
-import es.angelkrasimirov.biblioteca.models.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ClaimsBuilder;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,9 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 
 @Component
@@ -39,7 +34,7 @@ public class JwtTokenProvider {
 
 	}
 
-	public Claims parseClaims(String token) {
+	public Claims parseClaims(String token) throws JwtException {
 		return Jwts.parser()
 				.verifyWith(getSigningKey())
 				.build()
@@ -47,15 +42,15 @@ public class JwtTokenProvider {
 				.getPayload();
 	}
 
-	public String getUsername(String token) {
+	public String getUsername(String token) throws JwtException {
 		return parseClaims(token).getSubject();
 	}
 
-	public boolean isTokenExpired(String token) {
+	public boolean isTokenExpired(String token) throws JwtException {
 		return parseClaims(token).getExpiration().before(new Date());
 	}
 
-	public boolean validateToken(String token) {
+	public boolean validateToken(String token) throws JwtException {
 		return !isTokenExpired(token);
 	}
 

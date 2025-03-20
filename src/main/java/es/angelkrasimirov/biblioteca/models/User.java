@@ -2,8 +2,10 @@ package es.angelkrasimirov.biblioteca.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,24 +16,26 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@NotNull
+	@NotNull(message = "Username is required")
 	@Column(unique = true)
 	private String username;
 
+	@Email(message = "Invalid email")
 	private String email;
 
 	private String phone;
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@NotNull
+	@NotNull(message = "Password is required")
 	private String password;
 
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles",
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id")
 	)
-	private List<Role> roles;
+	private List<Role> roles = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -76,4 +80,13 @@ public class User {
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
+
+	public void addRole(Role role) {
+		this.roles.add(role);
+	}
+
+	public void removeRole(Role role) {
+		this.roles.remove(role);
+	}
+
 }

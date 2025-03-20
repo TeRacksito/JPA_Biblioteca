@@ -2,6 +2,9 @@ package es.angelkrasimirov.biblioteca.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "book_loan_history")
@@ -12,29 +15,38 @@ public class BookLoanHistory {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "book_copy_id")
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	private BookCopy bookCopy;
+	@JoinColumn(name = "book_id")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private Book book;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private User user;
 
-	private String loanDate;
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private LocalDateTime loanDate;
 
-	private String returnDate;
+	@NotNull(message = "Due date is required")
+	private LocalDateTime dueDate;
+
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private LocalDateTime actualReturnDate;
 
 	public Long getId() {
 		return id;
 	}
 
-	public BookCopy getBookCopy() {
-		return bookCopy;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setBookCopy(BookCopy bookCopy) {
-		this.bookCopy = bookCopy;
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
 	}
 
 	public User getUser() {
@@ -45,19 +57,27 @@ public class BookLoanHistory {
 		this.user = user;
 	}
 
-	public String getLoanDate() {
+	public LocalDateTime getLoanDate() {
 		return loanDate;
 	}
 
-	public void setLoanDate(String loanDate) {
+	public void setLoanDate(LocalDateTime loanDate) {
 		this.loanDate = loanDate;
 	}
 
-	public String getReturnDate() {
-		return returnDate;
+	public LocalDateTime getDueDate() {
+		return dueDate;
 	}
 
-	public void setReturnDate(String returnDate) {
-		this.returnDate = returnDate;
+	public void setDueDate(LocalDateTime dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public LocalDateTime getActualReturnDate() {
+		return actualReturnDate;
+	}
+
+	public void setActualReturnDate(LocalDateTime actualReturnDate) {
+		this.actualReturnDate = actualReturnDate;
 	}
 }
